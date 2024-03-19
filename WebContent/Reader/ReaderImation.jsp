@@ -1,0 +1,135 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Insert title here</title>
+<link rel="stylesheet"
+	href="https://cdn.bootcss.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
+<script
+	src="https://cdn.bootcss.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+<style>
+.imgs {
+	width: 900px;
+	height: 400px;
+	background-position: center;
+	background-size: cover;
+}
+</style>
+<script type="text/javascript">
+	function doDelete(userid) {
+		/* 如果这里弹出的对话框，用户点击的是确定，就马上去请求Servlet。 
+		如何知道用户点击的是确定。
+		如何在js的方法中请求servlet。 */
+		var flag = confirm("是否确定删除?");
+		if(flag){
+			//表明点了确定。 访问servlet。 在当前标签页上打开 超链接，
+			//window.location.href="DeleteServlet?sid="+sid;
+			location.href="DeleteServlet?Userid="+userid;
+		}
+	}
+</script>
+</head>
+<body background="<%=request.getContextPath() %>/img/background.jpg">
+	<h2 align="center" style="margin-top: 20px;">${username}的信息</h2>
+	<div class="container">
+		<div class="row " style="margin-top: 50px;">
+			<div align="center" class="col-md-3" >
+				<ul class="list-group" >
+					<li class="list-group-item "><a href="<%=request.getContextPath()%>/Reader/Reader.jsp"><span
+							style="color: black">首页</span></a></li>
+					<li class="list-group-item active"><a href="<%=request.getContextPath()%>/ShowUserServlet?username=${username}"><span
+							style="color: black">我的信息</span></a></li>
+					<li class="list-group-item    "><a href="/BookListServlet"><span
+							style="color: black">图书信息查询</span></a></li>
+					<li class="list-group-item "><a href="<%=request.getContextPath()%>/BorrowSearchServlet?key=${username}"><span
+							style="color: black">我的借阅记录</span></a></li>
+					<li class="list-group-item "><a href="../index.jsp"><span
+							style="color: black">退出</span></a></li>
+				</ul>
+			</div>
+			<div class="col-md-9">
+				<table class="table table-bordered">
+					<tr style="text-align: center">
+						<td>用户id</td>
+						<td>用户名</td>
+						<td>密码</td>
+						<td>生日</td>
+						<td>性别</td>
+						<td>用户类型</td>
+						<td>账号状态</td>
+						<td>欠费金额</td>
+						<%--<td style="width:100px;">操作</td>--%>
+					</tr>
+
+					<%--<c:forEach items="${pageBean.list }" var="users">--%>
+				  <tr align="center">
+					<td>${u.userid}</td>
+					<td>${u.username}</td>
+					<td>${u.passwords}</td>
+					<td>${u.birthday}</td>
+					<td>${u.sex}</td>
+					<td>
+					<c:if test="${u.usertype == 0}">图书管理员</c:if>
+					<c:if test="${u.usertype == 1}">读者</c:if>
+					<c:if test="${u.usertype == -1}">系统管理员</c:if>
+					</td>
+					<td>
+					<c:if test="${u.isfull == 0}">正常</c:if>
+					<c:if test="${u.isfull == 1}">欠费</c:if>
+					</td>
+					<td>${u.money}</td>
+					<%--<td><a href="EditUserServlet?userid=${u.userid}">更新</a>--%>
+						<%--<a href="#" onclick="doDelete(${userid})">删除</a>--%>
+					<%--</td>--%>
+				  </tr>
+			  <%--</c:forEach>--%>
+			  		<tr>
+			  	<td colspan="9">
+			  		<%--第 ${pageBean.currentPage } / ${pageBean.totalPage }--%>
+			  		&nbsp;&nbsp;
+			  		<%--每页显示${pageBean.pageSize }条  &nbsp;&nbsp;&nbsp;--%>
+			  		<%--总的记录数&nbsp;&nbsp;(${pageBean.totalSize }) &nbsp;&nbsp;&nbsp;--%>
+			  		<c:if test="${pageBean.currentPage !=1 }">
+			  			<%--<a href="UserListServlet?currentPage=1">首页</a>--%>
+						<%--| <a href="UserListServlet?currentPage=${pageBean.currentPage-1 }">上一页</a>--%>
+			  		</c:if>
+			  		<c:forEach begin="1" end="${pageBean.totalPage }" var="i">
+			  			<c:if test="${pageBean.currentPage == i }">
+			  				${i}
+			  			</c:if>
+			  			<c:if test="${pageBean.currentPage != i }">
+			  				<a href="UserListServlet?currentPage=${i}">${i }</a>
+			  			</c:if>
+			  		</c:forEach>
+			  		<c:if test="${pageBean.currentPage !=pageBean.totalPage }">
+			  			<a href="UserListServlet?currentPage=${pageBean.currentPage+1 }">下一页</a> | 
+			  			<a href="UserListServlet?currentPage=${pageBean.totalPage }">尾页</a>
+			  		</c:if>
+			  	</td>
+			  </tr>
+				</table>
+				
+				<%--<nav class="text-center">--%>
+				<%--&lt;%&ndash;<ul class="pagination">&ndash;%&gt;--%>
+					<%--&lt;%&ndash;<!-- 上一页 -->&ndash;%&gt;--%>
+					<%--&lt;%&ndash;<li class="page-item"><a href="UserListServlet?currentPage=${pageBean.currentPage-1 }" class="page-link"&ndash;%&gt;--%>
+						<%--&lt;%&ndash;aria-label="Previous"> <span aria-hidden="true">&laquo;</span>&ndash;%&gt;--%>
+					<%--&lt;%&ndash;</a></li>&ndash;%&gt;--%>
+					<%--<!-- 页码 -->--%>
+					<%--&lt;%&ndash;<!-- 下一页 -->&ndash;%&gt;--%>
+					<%--&lt;%&ndash;<li class="page-item"><a href="UserListServlet?currentPage=${pageBean.currentPage+1 }" class="page-link"&ndash;%&gt;--%>
+						<%--&lt;%&ndash;aria-label="Next"> <span aria-hidden="true">&raquo;</span>&ndash;%&gt;--%>
+					<%--&lt;%&ndash;</a></li>&ndash;%&gt;--%>
+				<%--</ul>--%>
+				<%--</nav>--%>
+				<%--<a href="Super/Super_AddUser.jsp" class="btn btn-default"><span>添加单个用户</span></a>--%>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
